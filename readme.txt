@@ -193,7 +193,8 @@ function my_rest_menu_item_fields( $fields ) {
 }
 `
 
-All items include a meta field which contains all custom fields. It also supports Advanced Custom Fields.
+Supports custom fields and Advanced Custom Fields
+All items include a meta field which contains all custom fields.
 
 == Installation ==
 

@@ -181,6 +181,9 @@ function my_rest_menu_item_fields( $fields ) {
 }
 ```
 
+Supports custom fields and Advanced Custom Fields.
+All items include a meta field which contains all custom fields.
+
 ## Task List
 - [ ] Add Multilingual fields
 - [ ] Nested levels depth
