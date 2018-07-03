@@ -4,8 +4,8 @@ Plugin Name: WP REST Menu
 Version: 1.0
 Description: Adds menu endpoints to WP REST API, filters json fields optionaly and provides an additional nested parent-child endpoint.
 Author: Kostas Charalampidis <skapator@gmail.com>
-Author URI: https://kostasch.com
-Plugin URI: https://www.kostasch.com/wp-plugins/wp-rest-menus
+Author URI: https://noveldigital.pro
+Plugin URI: https:/noveldigital.pro
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
