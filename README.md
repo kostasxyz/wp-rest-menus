@@ -112,7 +112,6 @@ There are two filters availiable:
 GET /wp-menus/v1/menus/<id>/?fields=ID,title,meta
 
 // Response sample
-// Response sample
 {  
     ID: 5,
     title: "Home",
@@ -187,5 +186,6 @@ All items include a meta field which contains all custom fields.
 ## Task List
 - [ ] Add Multilingual fields
 - [ ] Nested levels depth
+- [ ] Response caching
 
 Fork this repo if you would like to contribute
