@@ -2,6 +2,11 @@
 
 namespace Skapator;
 
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+    die;
+}
+
 use WP_REST_Controller;
 
 /**
@@ -214,7 +219,8 @@ class WP_REST_Menus_Controller extends WP_REST_Controller {
         $parents = array_values( 
             array_filter( $menu_items, function($m) {
                 return $m->menu_item_parent == 0;
-        }) );
+            }) 
+        );
 
         foreach( $parents as $parent ) {
             $parent->children = null;
