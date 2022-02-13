@@ -1,7 +1,9 @@
 <?php 
 /*
 Plugin Name: WP REST Menu
-Version: 1.0
+Version: 1.0.3
+Requires at least: 5.0
+Tested up to: 5.9
 Description: Adds menu endpoints to WP REST API, filters json fields optionaly and provides an additional nested parent-child endpoint.
 Author: Kostas Charalampidis <skapator@gmail.com>
 Author URI: https://noveldigital.pro
@@ -16,13 +18,13 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 //Get required dependencies.
-require plugin_dir_path( __FILE__ ) . '/includes/class-skap-wp-rest-menus-controller.php';
+require plugin_dir_path( __FILE__ ) . '/includes/class-webfiou-wp-rest-menus-controller.php';
 
 // Init rest menus class.
-function skap_wp_rest_menus_init() {
-    \Skapator\WP_REST_Menus_Controller::instance()
+function webfiou_wp_rest_menus_init() {
+    \Webfiou\WP_REST_Menus_Controller::instance()
         ->register_routes();
 }
 
 // Hook in rest api init
-add_action( 'rest_api_init', 'skap_wp_rest_menus_init' );
+add_action( 'rest_api_init', 'webfiou_wp_rest_menus_init' );

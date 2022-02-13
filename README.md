@@ -1,12 +1,26 @@
-## WP REST Menus
+=== WP REST Menus ===
+Contributors: skapator
+Tags: wp-rest-menus, wp-rest-api, v2, api, wp-rest-menus, wp-api-menus, json-rest-api, menu-api-routes, menus, REST, wp-api, wp-json, acf, wpml, polylang
+Requires at least: 5.0
+Tested up to: 5.9
+Requires PHP: 5.6
+Stable tag: 1.0.3
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+Add menus endpoints to WP REST API
+
+== Description ==
 
 This plugin adds new endpoints for WordPress registered menus.
+Usefull when building SPAs with Vuejs, React or any front-end framework.
+Works with Advacned Custom Fields, WPML, Polylang
 
 The new endpoints available:
 
 **Get all menus**
 ```
-GET /wp-menus/v1/menus
+GET /menus/v1/menus
 
 // Response sample
 {  
@@ -26,7 +40,7 @@ GET /wp-menus/v1/menus
 
 **Get a menus items by id (term_id)**
 ```
-GET /wp-menus/v1/menus/<id>
+GET /menus/v1/menus/<id>
 
 // Response sample
 {  
@@ -58,9 +72,10 @@ GET /wp-menus/v1/menus/<id>
 **Get all menu locations**
 All menu locations assigned  in /wp-admin/nav-menus.php?action=locations
 ```
-GET /wp-menus/v1/menus/locations
+GET /menus/v1/menus/locations is deprecated and will be removed in newer versions use:
+GET /menus/v1/locations
 
-// Response sample
+// Response example
 {  
     slug: "top",
     description: "Top Menu"
@@ -73,11 +88,12 @@ GET /wp-menus/v1/menus/locations
 ```
 
 **Get all menu location items**
-All menu locations assigned  in /wp-admin/nav-menus.php?action=locations
+All menu locations assigned in /wp-admin/nav-menus.php?action=locations
 ```
-GET /wp-menus/v1/menus/locations/<slug>
+GET /menus/v1/menus/locations/<slug> is deprecated and will be removed in newer versions use:
+GET /menus/v1/locations/<slug>
 
-// Response sample
+// Response samexampleple
 {  
     ID: 5,
     post_author: "1",
@@ -109,8 +125,9 @@ There are two filters availiable:
 **Fields Filter**
 ```
 // it will return only the fields specified
-GET /wp-menus/v1/menus/<id>/?fields=ID,title,meta
+GET /menus/v1/menus/<id>/?fields=ID,title,meta
 
+// Response sample
 // Response sample
 {  
     ID: 5,
@@ -124,7 +141,7 @@ GET /wp-menus/v1/menus/<id>/?fields=ID,title,meta
 ```
 // it will return menu items parents and nested children in a 'children' field
 // Currently only one level deep is supported
-GET /wp-menus/v1/menus/<id>/?nested=1
+GET /menus/v1/menus/<id>/?nested=1
 
 // Response sample
 {  
@@ -156,21 +173,68 @@ GET /wp-menus/v1/menus/<id>/?nested=1
 ```
 
 **WP filter hooks**
-There are two filter hooks availiable
+
+This plugin is quite configurable and provides lots of wp filter hooks from returned data in responses for each endpoint to params validation and endpoint permissions.
 
 ```
-add_filter( 'skap_wp_rest_menu_items', 'my_rest_menu_items', 10, 1 );
+add_filter( 'wprm/get_menus/wp_get_nav_menus/args', 'my_wp_get_nav_menus', 10, 1 );
+(used in GET /menus/v1/menus)
 
-function my_rest_menu_items( $menu_items ) {
-    // do something with $menu_items array
-    return $menu_items;
+function my_wp_get_nav_menus( $args ) {
+    // do something with wp_get_nav_menus $args array
+    return $args;
 }
 ```
 
 ```
-add_filter( 'skap_wp_rest_menu_item_fields', 'my_rest_menu_item_fields', 10, 1 );
+add_filter( 'wprm/get_menus', 'my_get_menus', 10, 1 );
+(used in GET /menus/v1/menus)
 
-function my_rest_menu_item_fields( $fields ) {
+function my_get_menus( $menus ) {
+    // do something with $menus array
+
+    return $menus; // WP_Error|WP_HTTP_Response|WP_REST_Response|mixed
+}
+```
+
+```
+add_filter( 'wprm/get_menu_locations', 'my_get_menu_locations', 10, 1 );
+(used in GET /menus/v1/locations)
+
+function my_get_menu_locations( $locations ) {
+    // You can modify the $locations array response (get_registered_nav_menus())
+    
+    return $locations; // WP_Error|WP_HTTP_Response|WP_REST_Response|mixed
+}
+```
+
+```
+add_filter( 'wprm/get_menu_items', 'my_get_menu_items', 10, 1 );
+(used in GET /menus/v1/menus/<id>)
+
+function my_rest_menu_item_fields( $menu ) {
+    // You can modify the $menu items
+
+    return $menu;
+}
+```
+
+```
+add_filter( 'wprm/get_location_menu_items', 'my_get_location_menu_items', 10, 1 );
+(used in GET /menus/v1/menus/<id>)
+
+function my_get_location_menu_items( $menu ) {
+    // You can modify the locations $menu items
+
+    return $menu;
+}
+```
+
+```
+add_filter( 'wprm/get_item_fields/filter_fields', 'my_filter_fields', 10, 1 );
+(used to filter return field -node edges-)
+
+function my_filter_fields( $fields ) {
     // You can modify the $fields array so
     // you can filter the return fields for all endpoints
     // without using the url param ?fields
@@ -180,12 +244,23 @@ function my_rest_menu_item_fields( $fields ) {
 }
 ```
 
-Supports custom fields and Advanced Custom Fields.
-All items include a meta field which contains all custom fields.
+Supports custom fields and Advanced Custom Fields
+If ACF is installed the response node edge is *acf* else *meta*
+In newer version these two edges will co exist and the plugin will separate natively registered custom fields ad acf registered ones.
 
-## Task List
-- [ ] Add Multilingual fields
-- [ ] Nested levels depth
-- [ ] Response caching
+== Installation ==
 
-Fork this repo if you would like to contribute
+There are no requirements other than Wordpress and one active menu. Installation is simple:
+
+1. Upload the ```wp-rest-menus``` folder to the ```/wp-content/plugins/``` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress
+
+== Frequently Asked Questions ==
+
+= How do I use this plugin? =
+
+It creates endpoints for wp nav menus to use in your front end.
+
+= Can I contribute? =
+
+Yes, you can fork it on [github](https://github.com/kostasxyz/wp-rest-menus).
